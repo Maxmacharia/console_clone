@@ -16,13 +16,19 @@ class FileStorage:
 	__objects = {}
 
 	"""developing a function to return the dictionary object"""
-	def all(self):
+	def all(self, cls=None):
+		if cls:
+			return {k: v for k, v in FileStorage.__objects.items() if isinstance(v, cls)}
 		return FileStorage.__objects
 	"""developing a function to sets the objects with the key<obj classname.
 	id"""
 	def new(self, obj):
 		key = f"{obj.__class__.__name__}.{obj.id}"
 		FileStorage.__objects[key] = obj
+	def delete(self, obj=None):
+		key = f"{obj.__class__.__name__}.{obj.id}"
+		if key in FileStorage.__objects:
+			del FileStorage.__objects[key]
 	def save(self):
 		with open(FileStorage.__file_path, 'w') as json_file:
 			json.dump({key: obj.to_dict() for key, obj in FileStorage.__objects.items()}, json_file)
