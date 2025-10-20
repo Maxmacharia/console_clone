@@ -27,13 +27,13 @@ class DBStorage:
 			Base.metadata.drop_all(self.__engine)
 	def all(self, cls=None):
 		obj_dict = {}
-		classes = [State, City]
+		classes = [State, City, User]
 		if cls:
 			if isinstance(cls, str):
 				cls = eval(cls)
 			query_result = self.__session.query(cls).all()
 			for obj in query_result:
-				key = f"{obj.__class__.__name}.{obj.id}"
+				key = f"{obj.__class__.__name__}.{obj.id}"
 				obj_dict[key] = obj
 		else:
 			for c in classes:
