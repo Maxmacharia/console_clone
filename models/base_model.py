@@ -12,7 +12,6 @@ class BaseModel:
 	updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 	def __init__(self, *args, **kwargs):
 		if kwargs != {}:
-			del kwargs["__class__"]
 			for key, value in kwargs.items():
 				setattr(self, key, value)
 				if "id" not in kwargs:
@@ -21,6 +20,8 @@ class BaseModel:
 					self.created_at = datetime.utcnow()
 				if "updated_at" not in kwargs:
 					self.updated_at = datetime.utcnow()
+			if '__class__' in kwargs:
+				del kwargs['__class__']
 		else:
 			self.id = str(uuid.uuid4())
 			self.created_at = datetime.utcnow()

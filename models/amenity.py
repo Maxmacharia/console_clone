@@ -1,7 +1,9 @@
 #!/usr/bin/python3
 
 from models.base_model import BaseModel, Base
-from models.amenity import Amenity
+from models.place import Place
+from sqlalchemy import Column, String
+from sqlalchemy.orm import relationship
 
 class Amenity(BaseModel, Base):
 	"""creates amenity"""
