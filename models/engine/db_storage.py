@@ -27,7 +27,7 @@ class DBStorage:
 			Base.metadata.drop_all(self.__engine)
 	def all(self, cls=None):
 		obj_dict = {}
-		classes = [State, City, User]
+		classes = [State, City, User, Place]
 		if cls:
 			if isinstance(cls, str):
 				cls = eval(cls)
