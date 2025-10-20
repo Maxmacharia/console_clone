@@ -3,6 +3,7 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from typing import List
+from models.review import Review
 
 class Place(BaseModel, Base):
 	"""creating place"""
@@ -18,3 +19,5 @@ class Place(BaseModel, Base):
 	latitude = Column(Float, nullable=True)
 	longtitude = Column(Float, nullable=True)
 	#amenity_ids: List[str] = []
+
+	reviews = relationship("Review", backref="place", cascade="all, delete, delete-orphan")
