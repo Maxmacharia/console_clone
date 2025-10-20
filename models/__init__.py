@@ -18,3 +18,4 @@ else:
 	storage = FileStorage()
 
 storage.reload()
+print("Storage type loaded:", type(storage).__name__)

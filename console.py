@@ -35,6 +35,7 @@ class HBNBCommand(cmd.Cmd):
 			objs = storage.all()
 			if key not in objs:
 				print("** no instance found **")
+
 			elif len(arg) < 3:
 				print("** attribute name missing **")
 		elif len(arg) != 4:

@@ -2,25 +2,33 @@
 import uuid
 from datetime import datetime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, string
+from sqlalchemy import Column, Integer, String, DateTime
 
 Base = declarative_base()
 
 class BaseModel:
-	"""
-	creating public instance attribute if the dictonary is not empty set the 	value of the named attribute of the object otherwise created a new objec	t
-	"""
+	id = Column(String(60), primary_key=True, nullable=False)
+	created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+	updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 	def __init__(self, *args, **kwargs):
 		if kwargs != {}:
 			del kwargs["__class__"]
 			for key, value in kwargs.items():
 				setattr(self, key, value)
+				if "id" not in kwargs:
+					self.id = str(uuid.uuid4())
+				if "created_at" not in kwargs:
+					self.created_at = datetime.utcnow()
+				if "updated_at" not in kwargs:
+					self.updated_at = datetime.utcnow()
 		else:
-			self.id = Column(String(60), default=lambda:str(uuid.uuid4()), unique=True, nullable=False, primary_key=True)
-			self.created_at = Column(default=lambda:datetime.utcnow(), nullable=False)
-			self.updated_at = Column(default=lambda:datetime.utcnow(), nullable=False)
+			self.id = str(uuid.uuid4())
+			self.created_at = datetime.utcnow()
+			self.updated_at = datetime.utcnow()
 	def __str__(self):
-		return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
+		d = self.__dict__.copy()
+		d.pop("_sa_instance_state", None)
+		return f"[{self.__class__.__name__}] ({self.id}) {d}"
 	def save(self):
 		from models import storage
 		storage.new(self)

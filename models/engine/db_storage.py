@@ -14,36 +14,42 @@ class DBStorage:
 	__engine = None
 	__session = None
 	def __init__(self):
-		db_user = os.getenv("HBHB_MYSQL_USER")
+		db_user = os.getenv("HBNB_MYSQL_USER")
 		db_pass = os.getenv("HBNB_MYSQL_PWD")
 		db_host = os.getenv("HBNB_MYSQL_HOST")
 		db_name = os.getenv("HBNB_MYSQL_DB")
+		env = os.getenv("HBNB_ENV")
 		
-		db_url = f"mysql+mysqldb://{db_user}:{db_pass}@{db_pass}/{db_name}"
+		db_url = f"mysql+mysqldb://{db_user}:{db_pass}@{db_host}/{db_name}"
 		self.__engine = create_engine(db_url, pool_pre_ping=True)
 
 		if env == "test":
-			Basemetadata.drop_all(self.__engine)
+			Base.metadata.drop_all(self.__engine)
 	def all(self, cls=None):
 		obj_dict = {}
-		classes = [State, City, User, Place, Review, Amenity]
+		classes = [State, City]
 		if cls:
 			if isinstance(cls, str):
 				cls = eval(cls)
 			query_result = self.__session.query(cls).all()
+			for obj in query_result:
+				key = f"{obj.__class__.__name}.{obj.id}"
+				obj_dict[key] = obj
 		else:
-			query_result = []
 			for c in classes:
-				query_result.extend(self.__session.query(c).all()
-		for obj in query_result:
-			key = f"{type(obj).__name__, obj.id)
-			obj_dict[key] = obj
+				query_result = self.__session.query(c).all()
+				for obj in query_result:
+					key = f"{obj.__class__.__name__}.{obj.id}"
+					obj_dict[key] = obj
 		return obj_dict
 
 	def new(self, obj):
+
 		if obj:
+			print("Adding object:", obj)
 			self.__session.add(obj)
 	def save(self):
+		print("Commiting changes to DB....")
 		self.__session.commit()
 	def delete(self, obj=None):
 		if obj:
